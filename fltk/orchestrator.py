@@ -58,17 +58,14 @@ class Orchestrator(object):
     def run(self, clear: bool = True) -> None:
         """
         Main loop of the Orchestartor.
-        @param clear: Boolean indicating whether a previous deployment needs to be cleaned up (i.e. lingering jobs that
-        were deployed by the previous run).
-
-        @type clear: bool
-        @return: None
-        @rtype: None
+        :return:
         """
         self._alive = True
         start_time = time.time()
         if clear:
             self.__clear_jobs()
+
+        i = 0
         while self._alive and time.time() - start_time < self._config.get_duration():
             # 1. Check arrivals
             # If new arrivals, store them in arrival list
@@ -85,7 +82,14 @@ class Orchestrator(object):
                 self.__logger.debug(f"Arrival of: {task}")
                 self.pending_tasks.put(task)
 
+            # sort pending tasks according to greedy
+            # to do
             while not self.pending_tasks.empty():
+
+                if i == 5:
+                    self.stop()
+                    return
+
                 # Do blocking request to priority queue
                 curr_task = self.pending_tasks.get()
                 self.__logger.info(f"Scheduling arrival of Arrival: {curr_task.id}")
@@ -99,9 +103,9 @@ class Orchestrator(object):
 
                 # TODO: Extend this logic in your real project, this is only meant for demo purposes
                 # For now we exit the thread after scheduling a single task.
-
-                self.stop()
-                return
+                i += 1
+                # self.stop()
+                # return
 
             self.__logger.debug("Still alive...")
             time.sleep(5)

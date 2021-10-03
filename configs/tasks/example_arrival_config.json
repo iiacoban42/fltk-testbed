@@ -8,12 +8,12 @@
         },
         "systemParameters": {
           "dataParallelism": "1",
-          "executorCores": "750m",
-          "executorMemory": "1Gi",
+          "executorCores": "2000m",
+          "executorMemory": "2Gi",
           "action": "train"
         },
         "hyperParameters": {
-          "batchSize": "128",
+          "batchSize": "256",
           "maxEpoch": "5",
           "learningRate": "0.01",
           "learningrateDecay": "0.0002"
@@ -27,7 +27,38 @@
         ]
       }
     ],
-    "lambda": 20,
+    "lambda": 10,
+    "preemptJobs": 0
+  },
+  {
+    "jobClassParameters": [
+      {
+        "networkConfiguration": {
+          "network": "FashionMNISTCNN",
+          "dataset": "FashionMNIST"
+        },
+        "systemParameters": {
+          "dataParallelism": "1",
+          "executorCores": "1000m",
+          "executorMemory": "1Gi",
+          "action": "train"
+        },
+        "hyperParameters": {
+          "batchSize": "256",
+          "maxEpoch": "5",
+          "learningRate": "0.01",
+          "learningrateDecay": "0.0002"
+        },
+        "classProbability": 0.1,
+        "priorities": [
+          {
+            "priority": 1,
+            "probability": 1
+          }
+        ]
+      }
+    ],
+    "lambda": 15,
     "preemptJobs": 0
   }
 ]
