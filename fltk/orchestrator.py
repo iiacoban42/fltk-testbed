@@ -86,7 +86,7 @@ class Orchestrator(object):
             # to do
             while not self.pending_tasks.empty():
 
-                if i == 5:
+                if i == 2:
                     self.stop()
                     return
 
