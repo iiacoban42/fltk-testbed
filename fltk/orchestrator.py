@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 import uuid
@@ -46,13 +47,17 @@ class Orchestrator(object):
         # API to interact with the cluster.
         self.__client = PyTorchJobClient()
 
-    def stop(self) -> None:
+    def stop(self, arrival_times: dict) -> None:
         """
         Stop the Orchestrator.
         @return:
         @rtype:
         """
         self.__logger.info("Received stop signal for the Orchestrator.")
+        self.__logger.info("Arrival times for the jobs:")
+        for i in arrival_times.keys():
+        	self.__logger.info("id " + str(i))
+        	self.__logger.info(arrival_times[i])
         self._alive = False
 
     def run(self, clear: bool = True) -> None:
@@ -64,7 +69,7 @@ class Orchestrator(object):
         start_time = time.time()
         if clear:
             self.__clear_jobs()
-
+        arrival_times = {}
         i = 0
         while self._alive and time.time() - start_time < self._config.get_duration():
             # 1. Check arrivals
@@ -81,13 +86,14 @@ class Orchestrator(object):
 
                 self.__logger.debug(f"Arrival of: {task}")
                 self.pending_tasks.put(task)
+                arrival_times[task.id] = datetime.datetime.now()
 
             # sort pending tasks according to greedy
             # to do
             while not self.pending_tasks.empty():
 
-                if i == 2:
-                    self.stop()
+                if i == 5:
+                    self.stop(arrival_times)
                     return
 
                 # Do blocking request to priority queue
@@ -108,7 +114,7 @@ class Orchestrator(object):
                 # return
 
             self.__logger.debug("Still alive...")
-            time.sleep(5)
+            # time.sleep(5)
 
         logging.info(f'Experiment completed, currently does not support waiting.')
 
