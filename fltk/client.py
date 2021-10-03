@@ -202,7 +202,9 @@ class Client(object):
         """
         max_epoch = self.learning_params.max_epoch + 1
         start_time_train = datetime.datetime.now()
-
+        self._logger.info("Started first epoch")
+        self._logger.info(start_time_train)
+        
         epoch_results = []
         for epoch in range(1, max_epoch):
             train_loss = self.train(epoch)
@@ -233,6 +235,9 @@ class Client(object):
             epoch_results.append(data)
             if self._id == 0:
                 self.log_progress(data, epoch)
+        end_time_test = datetime.datetime.now()
+        self._logger.info("Finished last epoch")
+        self._logger.info(end_time_test)
         return epoch_results
 
     def save_model(self, epoch):
