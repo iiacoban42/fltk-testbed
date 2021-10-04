@@ -6,7 +6,7 @@ def parse():
         log_lines = []
         for line in lines:
             if "trainjob" in line:
-                log_lines.append(line.split("trainjob-")[1])
+                log_lines.append(line.split("trainjob-")[1][:36])
             if "Start time" in line:
                 log_lines.append(line.split("Start time ")[1])
             if "End time" in line:
