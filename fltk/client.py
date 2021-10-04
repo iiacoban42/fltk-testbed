@@ -202,6 +202,7 @@ class Client(object):
         """
         max_epoch = self.learning_params.max_epoch + 1
         start_time = datetime.datetime.now()
+        self._logger.info("Start time " + str(start_time))
         end_time = start_time
         epoch_results = []
         for epoch in range(1, max_epoch):
@@ -237,6 +238,8 @@ class Client(object):
                 self.log_progress(data, epoch)
                 end_time = end_time_test
                 self.log_result(start_time, end_time)
+        
+        self._logger.info("End time " + str(end_time))
         return epoch_results
 
     def save_model(self, epoch):

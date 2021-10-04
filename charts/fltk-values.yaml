@@ -2,5 +2,5 @@ fltk:
     config: cloud_experiment.yaml
 provider:
     domain: gcr.io
-    projectName: qpe-project-14
+    projectName: focal-shape-325414
     imageName: fltk:latest
