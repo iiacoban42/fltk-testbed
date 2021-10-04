@@ -2,6 +2,7 @@ import datetime
 import logging
 from pathlib import Path
 from typing import Union, List, Tuple
+import csv
 
 import numpy as np
 import torch
@@ -16,7 +17,6 @@ from fltk.schedulers.min_lr_step import LearningScheduler
 from fltk.util.config.arguments import LearningParameters
 from fltk.util.config.base_config import BareConfig
 from fltk.util.results import EpochData
-
 
 class Client(object):
 
@@ -201,12 +201,13 @@ class Client(object):
         Function to run epochs with
         """
         max_epoch = self.learning_params.max_epoch + 1
-        start_time_train = datetime.datetime.now()
+
         self._logger.info("Started first epoch")
-        self._logger.info(start_time_train)
-        
+
         epoch_results = []
         for epoch in range(1, max_epoch):
+            start_time_train = datetime.datetime.now()
+            self._logger.info(start_time_train)
             train_loss = self.train(epoch)
 
             # Let only the 'master node' work on training. Possibly DDP can be used
@@ -259,6 +260,6 @@ class Client(object):
                                     epoch_data.accuracy,
                                     epoch)
 
-        self.tb_writer.add_scalar('total_milliseconds', 
-                                    epoch_data.duration_train + epoch_data.duration_test, 
+        self.tb_writer.add_scalar('total_milliseconds',
+                                    epoch_data.duration_train + epoch_data.duration_test,
                                     epoch)

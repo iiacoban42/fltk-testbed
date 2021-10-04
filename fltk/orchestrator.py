@@ -89,10 +89,9 @@ class Orchestrator(object):
                 arrival_times[task.id] = datetime.datetime.now()
 
             # sort pending tasks according to greedy
-            # to do
             while not self.pending_tasks.empty():
 
-                if i == 5:
+                if i == 2:
                     self.stop(arrival_times)
                     return
 

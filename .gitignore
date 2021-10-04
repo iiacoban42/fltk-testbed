@@ -2,9 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
 # C extensions
 *.so
+
+configs/example_cloud_experiment.json
+charts/fltk-values.yaml
 
 # Distribution / packaging
 .Python
@@ -134,3 +136,4 @@ data/**
 !data/.gitkeep
 output
 .idea
+
