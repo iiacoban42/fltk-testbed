@@ -202,12 +202,16 @@ class Client(object):
         """
         max_epoch = self.learning_params.max_epoch + 1
 
+
         self._logger.info("Started first epoch")
 
+        start_time = datetime.datetime.now()
+        self._logger.info("Start time " + str(start_time))
+        end_time = start_time
         epoch_results = []
         for epoch in range(1, max_epoch):
             start_time_train = datetime.datetime.now()
-            self._logger.info(start_time_train)
+
             train_loss = self.train(epoch)
 
             # Let only the 'master node' work on training. Possibly DDP can be used
@@ -220,7 +224,8 @@ class Client(object):
             start_time_test = datetime.datetime.now()
             accuracy, test_loss, class_precision, class_recall, confusion_mat = self.test()
 
-            elapsed_time_test = datetime.datetime.now() - start_time_test
+            end_time_test = datetime.datetime.now()
+            elapsed_time_test = end_time_test - start_time_test
             test_time_ms = int(elapsed_time_test.total_seconds() * 1000)
 
             data = EpochData(epoch_id=epoch,
@@ -236,9 +241,10 @@ class Client(object):
             epoch_results.append(data)
             if self._id == 0:
                 self.log_progress(data, epoch)
-        end_time_test = datetime.datetime.now()
-        self._logger.info("Finished last epoch")
-        self._logger.info(end_time_test)
+                end_time = end_time_test
+                self.log_result(start_time, end_time)
+
+        self._logger.info("End time " + str(end_time))
         return epoch_results
 
     def save_model(self, epoch):
@@ -263,3 +269,6 @@ class Client(object):
         self.tb_writer.add_scalar('total_milliseconds',
                                     epoch_data.duration_train + epoch_data.duration_test,
                                     epoch)
+
+    def log_result(self, start_time, end_time):
+        self.tb_writer.add_text('Timing', "Started at " + str(start_time) + " and ended at " + str(end_time))
