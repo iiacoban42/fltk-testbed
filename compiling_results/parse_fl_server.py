@@ -7,10 +7,11 @@ def parse():
         for line in lines:
             if not found_line and "Arrival times for the jobs:" in line:
                 found_line = True
+                print("found")
             
-            if found_line and not "Traceback" in line:
+            if found_line and not "End of arrival times" in line and "Orchestrator INFO" in line:
                 log_lines.append(line)
-            elif found_line and "Traceback" in line: break
+            elif found_line and "End of arrival times" in line in line: break
         modified_lines = []
         for line in log_lines[1:]:
             modified_line = str.rstrip(line)

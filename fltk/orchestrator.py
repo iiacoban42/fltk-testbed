@@ -58,6 +58,7 @@ class Orchestrator(object):
         for i in arrival_times.keys():
         	self.__logger.info("id " + str(i))
         	self.__logger.info(arrival_times[i])
+        self.__logger.info("End of arrival times")
         self._alive = False
 
     def run(self, clear: bool = True) -> None:

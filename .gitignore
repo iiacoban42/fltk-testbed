@@ -7,6 +7,7 @@ __pycache__/
 
 configs/example_cloud_experiment.json
 charts/fltk-values.yaml
+exp.sh
 
 # Distribution / packaging
 .Python
