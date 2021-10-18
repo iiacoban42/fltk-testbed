@@ -47,7 +47,7 @@ class Orchestrator(object):
         # API to interact with the cluster.
         self.__client = PyTorchJobClient()
 
-    def stop(self, arrival_times: dict) -> None:
+    def stop(self, arrival_times: dict, sys_param: dict) -> None:
         """
         Stop the Orchestrator.
         @return:
@@ -59,6 +59,15 @@ class Orchestrator(object):
         	self.__logger.info("id " + str(i))
         	self.__logger.info(arrival_times[i])
         self.__logger.info("End of arrival times")
+
+        self.__logger.info("System configurations for the jobs:")
+        for i in sys_param.keys():
+            self.__logger.info("id " + str(i))
+            self.__logger.info("network " + sys_param[i][0])
+            self.__logger.info("system config " + sys_param[i][1])
+            self.__logger.info("parameter config " + sys_param[i][2])
+        self.__logger.info("End of system configurations")
+
         self._alive = False
 
     def run(self, clear: bool = True) -> None:
@@ -71,6 +80,7 @@ class Orchestrator(object):
         if clear:
             self.__clear_jobs()
         arrival_times = {}
+        sys_param = {}
         i = 0
         while self._alive and time.time() - start_time < self._config.get_duration():
             # 1. Check arrivals
@@ -88,12 +98,12 @@ class Orchestrator(object):
                 self.__logger.debug(f"Arrival of: {task}")
                 self.pending_tasks.put(task)
                 arrival_times[task.id] = datetime.datetime.now()
-
+                sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config()]
             # sort pending tasks according to greedy
             while not self.pending_tasks.empty():
 
                 if i == 2:
-                    self.stop(arrival_times)
+                    self.stop(arrival_times, sys_param)
                     return
 
                 # Do blocking request to priority queue

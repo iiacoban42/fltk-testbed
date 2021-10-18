@@ -208,7 +208,12 @@ class Client(object):
         start_time = datetime.datetime.now()
         self._logger.info("Start time " + str(start_time))
         end_time = start_time
+
         epoch_results = []
+        log_train_loss = 0.0
+        log_test_loss = 0.0
+        log_accuracy = 0.0
+
         for epoch in range(1, max_epoch):
             start_time_train = datetime.datetime.now()
 
@@ -228,12 +233,9 @@ class Client(object):
             elapsed_time_test = end_time_test - start_time_test
             test_time_ms = int(elapsed_time_test.total_seconds() * 1000)
 
-            self._logger.info("Epoch: " + str(epoch))
-            self._logger.info("Train loss: " + str(train_loss))
-            self._logger.info("Test loss: " + str(test_loss))
-            self._logger.info("Accuracy: " + str(accuracy))
-            self._logger.info("Train time: " + str(train_time_ms))
-            self._logger.info("Test time: " + str(test_time_ms))
+            log_accuracy = accuracy
+            log_train_loss = train_loss
+            log_test_loss = test_loss
 
             data = EpochData(epoch_id=epoch,
                              duration_train=train_time_ms,
@@ -252,6 +254,11 @@ class Client(object):
                 self.log_result(start_time, end_time)
 
         self._logger.info("End time " + str(end_time))
+        self._logger.info("Accuracy " + str(log_accuracy))
+        self._logger.info("Train loss " + str(log_train_loss))
+        self._logger.info("Test loss " + str(log_test_loss))
+
+
         return epoch_results
 
     def save_model(self, epoch):
