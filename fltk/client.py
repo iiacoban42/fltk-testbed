@@ -228,6 +228,13 @@ class Client(object):
             elapsed_time_test = end_time_test - start_time_test
             test_time_ms = int(elapsed_time_test.total_seconds() * 1000)
 
+            self._logger.info("Epoch: " + str(epoch))
+            self._logger.info("Train loss: " + str(train_loss))
+            self._logger.info("Test loss: " + str(test_loss))
+            self._logger.info("Accuracy: " + str(accuracy))
+            self._logger.info("Train time: " + str(train_time_ms))
+            self._logger.info("Test time: " + str(test_time_ms))
+
             data = EpochData(epoch_id=epoch,
                              duration_train=train_time_ms,
                              duration_test=test_time_ms,
