@@ -60,13 +60,21 @@ class Orchestrator(object):
         	self.__logger.info(arrival_times[i])
         self.__logger.info("End of arrival times")
 
-        self.__logger.info("System configurations for the jobs:")
+        self.__logger.info("Configurations for the jobs:")
         for i in sys_param.keys():
             self.__logger.info("id " + str(i))
             self.__logger.info("network " + sys_param[i][0])
-            self.__logger.info("system config " + sys_param[i][1])
-            self.__logger.info("parameter config " + sys_param[i][2])
-        self.__logger.info("End of system configurations")
+            self.__logger.info("system config ")
+            self.__logger.info("data parallelism " + sys_param[i][1].data_parallelism)
+            self.__logger.info("cores " + sys_param[i][1].executor_cores)
+            self.__logger.info("memory " + sys_param[i][1].executor_memory)
+            self.__logger.info("parameter config ")
+            self.__logger.info("batch size " + sys_param[i][2].bs)
+            self.__logger.info("max epoch " + sys_param[i][2].max_epoch)
+            self.__logger.info("learning rate " + sys_param[i][2].lr)
+            self.__logger.info("learning rate decay " + sys_param[i][2].lr_decay)
+
+        self.__logger.info("End of configurations")
 
         self._alive = False
 

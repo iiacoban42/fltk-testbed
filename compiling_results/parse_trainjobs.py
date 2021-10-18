@@ -2,7 +2,6 @@ import csv
 
 def append_list_as_row(list_of_elem, file):
     # Open file in append mode
-    print(list_of_elem)
     with open(file, 'a+', newline='') as write_obj:
         # Create a writer object from csv module
         csv_writer = csv.writer(write_obj)
