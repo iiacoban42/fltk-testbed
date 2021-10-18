@@ -1,29 +1,46 @@
+import csv
+
+def append_list_as_row(list_of_elem, file):
+    # Open file in append mode
+    print(list_of_elem)
+    with open(file, 'a+', newline='') as write_obj:
+        # Create a writer object from csv module
+        csv_writer = csv.writer(write_obj)
+        # Add contents of list as last row in the csv file
+        csv_writer.writerow(list_of_elem)
+
 def parse():
 
     with open("trainjobs.log", mode="r") as trainjobs_read:
 
         lines = trainjobs_read.readlines()
         log_lines = []
+        # ['job_id', start time, end time, accuracy, train loss, test loss]
+        job = []
         for line in lines:
             if "trainjob" in line:
-                log_lines.append(line.split("trainjob-")[1][:36])
-            if "Epoch" in line:
-                log_lines.append(line.split("Epoch ")[1])
-            if "Accuracy" in line:
-                log_lines.append(line.split("Accuracy ")[1])
-            if "Train loss" in line:
-                log_lines.append(line.split("Train loss ")[1])
-            if "Test loss" in line:
-                log_lines.append(line.split("Test loss ")[1])
-            if "Train time" in line:
-                log_lines.append(line.split("Train time ")[1])
-            if "Test time" in line:
-                log_lines.append(line.split("Test time ")[1])
+                trainjob = line.split("trainjob-")[1][:36]
+                log_lines.append(trainjob)
+                job.append(trainjob)
             if "Start time" in line:
-                log_lines.append(line.split("Start time ")[1])
+                start_time = line.split("Start time ")[1]
+                log_lines.append(start_time)
+                job.append(start_time[:-1])
             if "End time" in line:
-                log_lines.append(line.split("End time ")[1])
-
+                end_time = line.split("End time ")[1]
+                log_lines.append(end_time)
+                job.append(end_time[:-1])
+            if "Accuracy" in line:
+                accuracy = line.split("Accuracy ")[1]
+                job.append(float(accuracy))
+            if "Train loss" in line:
+                train_loss = line.split("Train loss ")[1]
+                job.append(float(train_loss))
+            if "Test loss" in line:
+                test_loss = line.split("Test loss ")[1]
+                job.append(float(test_loss))
+                append_list_as_row(job, "ml_results.csv")
+                job = []
 
         modified_lines = []
         for line in log_lines:
