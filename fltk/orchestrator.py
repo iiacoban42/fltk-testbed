@@ -111,14 +111,12 @@ class Orchestrator(object):
                 if not task_params in scheduled_tasks:
                     scheduled_tasks[task_params] = 1
                     self.pending_tasks.put(task)
-                    i += 1
                     arrival_time = datetime.datetime.now()
                     arrival_times[task.id] = arrival_time
                     sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
                 elif scheduled_tasks[task_params] < 3:
                     scheduled_tasks[task_params] += 1
                     self.pending_tasks.put(task)
-                    i += 1
                     arrival_time = datetime.datetime.now()
                     arrival_times[task.id] = arrival_time
                     sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
@@ -142,7 +140,7 @@ class Orchestrator(object):
 
                 # TODO: Extend this logic in your real project, this is only meant for demo purposes
                 # For now we exit the thread after scheduling a single task.
-                # i += 1
+                i += 1
                 # self.stop()
                 # return
 
