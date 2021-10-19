@@ -3,16 +3,15 @@ import os
 
 def append_list_as_row(list_of_elem, file):
     if os.stat(file).st_size == 0:
-        with open(file, 'a+', newline='') as f:
+        with open(file, 'w+', newline='') as f:
             # csv_writer = csv.writer(write_obj)
-            header = '"id","arrival_time","network","data_parallelism","cores","memory","batch_size","epochs","learn_rate","learn_decay"'
+            header = 'id,arrival_time,network,data_parallelism,cores,memory,batch_size,epochs,learn_rate,learn_decay'
             f.write(header + "\n")
-    # Open file in append mode
-    with open(file, 'a+', newline='') as write_obj:
-        # Create a writer object from csv module
-        csv_writer = csv.writer(write_obj)
-        # Add contents of list as last row in the csv file
-        csv_writer.writerow(list_of_elem)
+            # Create a writer object from csv module
+            csv_writer = csv.writer(f)
+            # Add contents of list as last row in the csv file
+            csv_writer.writerow(list_of_elem)
+        
 
 def log_job_param(line, job):
 
@@ -51,7 +50,6 @@ def parse():
         for line in lines:
             if not found_line and "Configurations for the jobs:" in line:
                 found_line = True
-                print("found")
 
             if found_line and not "End of configurations" in line and "Orchestrator INFO" in line:
                 job_param = log_job_param(line, job_param)
@@ -64,7 +62,6 @@ def parse():
         for line in lines:
             if not found_line and "Arrival times for the jobs:" in line:
                 found_line = True
-                print("found")
 
             if found_line and not "End of arrival times" in line and "Orchestrator INFO" in line:
                 log_lines.append(line)
