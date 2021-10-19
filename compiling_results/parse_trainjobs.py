@@ -2,18 +2,19 @@ import csv
 import os
 
 def append_list_as_row(list_of_elem, file):
-    # Open file in append mode
     if os.stat(file).st_size == 0:
         with open(file, 'w+', newline='') as f:
             # csv_writer = csv.writer(write_obj)
             header = 'id,start_time,end_time,accuracy,train_loss,test_loss'
             f.write(header + "\n")
-            # Create a writer object from csv module
-            csv_writer = csv.writer(f)
-            # Add contents of list as last row in the csv file
-            csv_writer.writerow(list_of_elem)
+    # Open file in append mode
+    with open(file, 'a+', newline='') as write_obj:
+        # Create a writer object from csv module
+        csv_writer = csv.writer(write_obj)
+        # Add contents of list as last row in the csv file
+        csv_writer.writerow(list_of_elem)
 
-        
+
 def parse():
 
     with open("trainjobs.log", mode="r") as trainjobs_read:

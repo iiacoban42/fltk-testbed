@@ -16,9 +16,9 @@ def merge():
     datetime_starts = [datetime.datetime.strptime(i, "%Y-%m-%d %H:%M:%S.%f") for i in starts]
     datetime_finishes = [datetime.datetime.strptime(i, "%Y-%m-%d %H:%M:%S.%f") for i in finishes]
 
-    service_times = [(f - s).total_seconds() * 1000 for f,s in zip(datetime_finishes,datetime_starts)]
-    times_in_queue = [(s - a).total_seconds() * 1000 for s,a in zip(datetime_starts,datetime_arrivals)]
-    response_times = [(f - a).total_seconds() * 1000 for f,a in zip(datetime_finishes,datetime_arrivals)]
+    service_times = [(f - s).total_seconds() for f,s in zip(datetime_finishes,datetime_starts)]
+    times_in_queue = [(s - a).total_seconds() for s,a in zip(datetime_starts,datetime_arrivals)]
+    response_times = [(f - a).total_seconds() for f,a in zip(datetime_finishes,datetime_arrivals)]
 
     merged_frame['service_time'] = service_times
     merged_frame['queue_time'] = times_in_queue

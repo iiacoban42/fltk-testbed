@@ -7,11 +7,12 @@ def append_list_as_row(list_of_elem, file):
             # csv_writer = csv.writer(write_obj)
             header = 'id,arrival_time,network,data_parallelism,cores,memory,batch_size,epochs,learn_rate,learn_decay'
             f.write(header + "\n")
-            # Create a writer object from csv module
-            csv_writer = csv.writer(f)
-            # Add contents of list as last row in the csv file
-            csv_writer.writerow(list_of_elem)
-        
+    # Open file in append mode
+    with open(file, 'a+', newline='') as write_obj:
+        # Create a writer object from csv module
+        csv_writer = csv.writer(write_obj)
+        # Add contents of list as last row in the csv file
+        csv_writer.writerow(list_of_elem)
 
 def log_job_param(line, job):
 

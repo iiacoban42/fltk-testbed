@@ -112,7 +112,7 @@ class Orchestrator(object):
             # sort pending tasks according to greedy
             while not self.pending_tasks.empty():
 
-                if i == 2:
+                if i == 5:
                     self.stop(arrival_times, sys_param)
                     return
 
