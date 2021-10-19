@@ -90,6 +90,7 @@ class Orchestrator(object):
             self.__clear_jobs()
         arrival_times = {}
         sys_param = {}
+        scheduled_tasks = {}
         i = 0
         while self._alive and time.time() - start_time < self._config.get_duration():
             # 1. Check arrivals
@@ -105,14 +106,26 @@ class Orchestrator(object):
                                    param_conf=arrival.get_parameter_config())
 
                 self.__logger.debug(f"Arrival of: {task}")
-                self.pending_tasks.put(task)
-                arrival_time = datetime.datetime.now()
-                arrival_times[task.id] = arrival_time
-                sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
+                task_params = str(arrival.get_parameter_config().bs)+str(arrival.get_parameter_config().max_epoch)\
+                    +str(arrival.get_system_config().executor_memory)+str(arrival.get_system_config().executor_cores)
+                if not task_params in scheduled_tasks:
+                    scheduled_tasks[task_params] = 1
+                    self.pending_tasks.put(task)
+                    i += 1
+                    arrival_time = datetime.datetime.now()
+                    arrival_times[task.id] = arrival_time
+                    sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
+                elif scheduled_tasks[task_params] < 3:
+                    scheduled_tasks[task_params] += 1
+                    self.pending_tasks.put(task)
+                    i += 1
+                    arrival_time = datetime.datetime.now()
+                    arrival_times[task.id] = arrival_time
+                    sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
             # sort pending tasks according to greedy
             while not self.pending_tasks.empty():
 
-                if i == 5:
+                if i == 48:
                     self.stop(arrival_times, sys_param)
                     return
 
@@ -129,7 +142,7 @@ class Orchestrator(object):
 
                 # TODO: Extend this logic in your real project, this is only meant for demo purposes
                 # For now we exit the thread after scheduling a single task.
-                i += 1
+                # i += 1
                 # self.stop()
                 # return
 
