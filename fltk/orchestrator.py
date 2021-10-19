@@ -57,12 +57,13 @@ class Orchestrator(object):
         self.__logger.info("Arrival times for the jobs:")
         for i in arrival_times.keys():
         	self.__logger.info("id " + str(i))
-        	self.__logger.info(arrival_times[i])
+
         self.__logger.info("End of arrival times")
 
         self.__logger.info("Configurations for the jobs:")
         for i in sys_param.keys():
             self.__logger.info("id " + str(i))
+            self.__logger.info("arrival time " + sys_param[i])
             self.__logger.info("network " + sys_param[i][0])
             self.__logger.info("system config ")
             self.__logger.info("data parallelism " + sys_param[i][1].data_parallelism)
@@ -105,8 +106,9 @@ class Orchestrator(object):
 
                 self.__logger.debug(f"Arrival of: {task}")
                 self.pending_tasks.put(task)
-                arrival_times[task.id] = datetime.datetime.now()
-                sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config()]
+                arrival_time = datetime.datetime.now()
+                arrival_times[task.id] = arrival_time
+                sys_param[task.id] = [arrival.get_network(), arrival_time, arrival.get_system_config(), arrival.get_parameter_config()]
             # sort pending tasks according to greedy
             while not self.pending_tasks.empty():
 

@@ -12,6 +12,8 @@ def log_job_param(line, job):
 
     if "id" in line:
         job.append(line.split("id ")[1][:-1])
+    if "arrival time" in line:
+        job.append(line.split("arrival time ")[1][:-1])
     if "network" in line:
         job.append(line.split("network ")[1][:-1])
     if "data parallelism" in line:
