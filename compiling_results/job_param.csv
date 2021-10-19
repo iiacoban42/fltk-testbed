@@ -1,4 +1,4 @@
-
+"id","arrival_time","network","data_parallelism","cores","memory","batch_size","epochs","learn_rate","learn_decay"
 b1b71f49-65af-4cb7-8503-8747e24665b1,2021-10-18 22:54:52.275325,FashionMNISTCNN,1,2000m,2Gi,256.0,5.0,0.01,0.0002
 e4661c60-b447-4cbc-9c49-0c958f667657,2021-10-18 22:55:02.280234,FashionMNISTCNN,1,2000m,2Gi,256.0,5.0,0.01,0.0002
 452fcb82-5375-4c86-baee-7a8c529400ec,2021-10-18 22:55:22.290627,FashionMNISTCNN,1,2000m,2Gi,256.0,5.0,0.01,0.0002

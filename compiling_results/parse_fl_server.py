@@ -1,6 +1,12 @@
 import csv
+import os
 
 def append_list_as_row(list_of_elem, file):
+    if os.stat(file).st_size == 0:
+        with open(file, 'a+', newline='') as f:
+            # csv_writer = csv.writer(write_obj)
+            header = '"id","arrival_time","network","data_parallelism","cores","memory","batch_size","epochs","learn_rate","learn_decay"'
+            f.write(header + "\n")
     # Open file in append mode
     with open(file, 'a+', newline='') as write_obj:
         # Create a writer object from csv module
