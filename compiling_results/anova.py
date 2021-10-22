@@ -9,7 +9,7 @@ pd.set_option('display.float_format',  '{:,.5f}'.format)
 
 frame = []
 
-exp = '1.f'
+exp = '0.f'
 
 datafile = os.getcwd() + '/compiling_results/results/'+ exp +'.csv'
 
@@ -20,7 +20,7 @@ df = pd.read_csv(datafile)
 
 result = np.divide(df['accuracy'], df['response_time'])
 
-anova_accuracy = pg.anova(dv='accuracy', between=['cores', 'memory', 'batch_size', 'epochs'], data=df,
+anova_accuracy = pg.anova(dv='accuracy', between=['batch_size', 'epochs'], data=df,
                detailed=True)
 
 anova_response_time = pg.anova(dv='response_time', between=['cores', 'memory', 'batch_size', 'epochs'], data=df,
