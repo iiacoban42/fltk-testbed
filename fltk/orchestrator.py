@@ -96,6 +96,10 @@ class Orchestrator(object):
             # 1. Check arrivals
             # If new arrivals, store them in arrival list
             while not self.__arrival_generator.arrivals.empty():
+                if i == 16:
+                    self.stop(arrival_times, sys_param)
+                    return
+
                 arrival: Arrival = self.__arrival_generator.arrivals.get()
                 unique_identifier: uuid.UUID = uuid.uuid4()
                 task = ArrivalTask(priority=arrival.get_priority(),
@@ -108,22 +112,23 @@ class Orchestrator(object):
                 self.__logger.debug(f"Arrival of: {task}")
                 task_params = str(arrival.get_parameter_config().bs)+str(arrival.get_parameter_config().max_epoch)\
                     +str(arrival.get_system_config().executor_memory)+str(arrival.get_system_config().executor_cores)
-                if not task_params in scheduled_tasks:
-                    scheduled_tasks[task_params] = 1
-                    self.pending_tasks.put(task)
-                    arrival_time = datetime.datetime.now()
-                    arrival_times[task.id] = arrival_time
-                    sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
-                elif scheduled_tasks[task_params] < 3:
-                    scheduled_tasks[task_params] += 1
-                    self.pending_tasks.put(task)
-                    arrival_time = datetime.datetime.now()
-                    arrival_times[task.id] = arrival_time
-                    sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
+                # if not task_params in scheduled_tasks:
+                    # scheduled_tasks[task_params] = 1
+                self.pending_tasks.put(task)
+                arrival_time = datetime.datetime.now()
+                arrival_times[task.id] = arrival_time
+                sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
+                # elif scheduled_tasks[task_params] < 3:
+                #     scheduled_tasks[task_params] += 1
+                #     self.pending_tasks.put(task)
+                #     arrival_time = datetime.datetime.now()
+                #     arrival_times[task.id] = arrival_time
+                #     sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
             # sort pending tasks according to greedy
+                i += 1
             while not self.pending_tasks.empty():
 
-                if i == 48:
+                if i == 16:
                     self.stop(arrival_times, sys_param)
                     return
 
@@ -140,7 +145,7 @@ class Orchestrator(object):
 
                 # TODO: Extend this logic in your real project, this is only meant for demo purposes
                 # For now we exit the thread after scheduling a single task.
-                i += 1
+
                 # self.stop()
                 # return
 
