@@ -20,7 +20,8 @@ df = pd.read_csv(datafile)
 
 result = np.divide(df['accuracy'], df['response_time'])
 
-anova_accuracy = pg.anova(dv='accuracy', between=['batch_size', 'epochs'], data=df,
+# for 1, between=['batch_size','epochs']
+anova_accuracy = pg.anova(dv='accuracy', between=['cores', 'memory', 'batch_size', 'epochs'], data=df,
                detailed=True)
 
 anova_response_time = pg.anova(dv='response_time', between=['cores', 'memory', 'batch_size', 'epochs'], data=df,
