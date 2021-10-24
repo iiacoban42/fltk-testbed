@@ -30,7 +30,6 @@ def get_data(exp, exp_result, factor):
 
     data = []
     boxplot_df = pd.DataFrame([])
-    boxplot_df.rename(columns = factor_config)
 
     for fact in factor_config:
         # filter rows by factor config
@@ -38,19 +37,25 @@ def get_data(exp, exp_result, factor):
         # get accuracy/response time
         new_data = new_df[exp_result]
         data.append(new_data)
-        print(fact)
+        # print(fact)
 
         boxplot_df[fact] = new_data
 
-    boxplot_df[factor_config[0]] = data[0]
-    boxplot_df[factor_config[1]] = data[1]
+    daaata = {
+        factor_config[0]: data[0],
+        factor_config[1]: data[1]
+
+    }
+    # boxplot_df[factor_config[0]] =
+    # boxplot_df[factor_config[1]] = data[1]
+
+    boxplot_df = pd.DataFrame(daaata)
+    print(data)
     print(boxplot_df)
 
     myFig = plt.figure()
     bp = boxplot_df.boxplot()
     myFig.savefig(exp+".jpg", format="jpg")
-
-    # get_boxplot(exp, data, factor_config)
 
 
 exp = '0.f'
