@@ -1,0 +1,5 @@
+                Source      SS  DF      MS       F   p-unc     np2
+0           batch_size 0.11408   1 0.11408 0.56636 0.47327 0.06611
+1               epochs 0.02341   1 0.02341 0.11622 0.74195 0.01432
+2  batch_size * epochs 0.00067   1 0.00067 0.00335 0.95526 0.00042
+3             Residual 1.61133   8 0.20142     NaN     NaN     NaN

@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 import uuid
@@ -46,33 +47,59 @@ class Orchestrator(object):
         # API to interact with the cluster.
         self.__client = PyTorchJobClient()
 
-    def stop(self) -> None:
+    def stop(self, arrival_times: dict, sys_param: dict) -> None:
         """
         Stop the Orchestrator.
         @return:
         @rtype:
         """
         self.__logger.info("Received stop signal for the Orchestrator.")
+        self.__logger.info("Arrival times for the jobs:")
+        for i in arrival_times.keys():
+        	self.__logger.info("id " + str(i))
+
+        self.__logger.info("End of arrival times")
+
+        self.__logger.info("Configurations for the jobs:")
+        for i in sys_param.keys():
+            self.__logger.info("id " + str(i))
+            self.__logger.info("arrival time " + str(sys_param[i][3]))
+            self.__logger.info("network " + sys_param[i][0])
+            self.__logger.info("system config ")
+            self.__logger.info("data parallelism " + sys_param[i][1].data_parallelism)
+            self.__logger.info("cores " + sys_param[i][1].executor_cores)
+            self.__logger.info("memory " + sys_param[i][1].executor_memory)
+            self.__logger.info("parameter config ")
+            self.__logger.info("batch size " + sys_param[i][2].bs)
+            self.__logger.info("max epoch " + sys_param[i][2].max_epoch)
+            self.__logger.info("learning rate " + sys_param[i][2].lr)
+            self.__logger.info("learning rate decay " + sys_param[i][2].lr_decay)
+
+        self.__logger.info("End of configurations")
+
         self._alive = False
 
     def run(self, clear: bool = True) -> None:
         """
         Main loop of the Orchestartor.
-        @param clear: Boolean indicating whether a previous deployment needs to be cleaned up (i.e. lingering jobs that
-        were deployed by the previous run).
-
-        @type clear: bool
-        @return: None
-        @rtype: None
+        :return:
         """
         self._alive = True
         start_time = time.time()
         if clear:
             self.__clear_jobs()
+        arrival_times = {}
+        sys_param = {}
+        scheduled_tasks = {}
+        i = 0
         while self._alive and time.time() - start_time < self._config.get_duration():
             # 1. Check arrivals
             # If new arrivals, store them in arrival list
             while not self.__arrival_generator.arrivals.empty():
+                if i == 16:
+                    self.stop(arrival_times, sys_param)
+                    return
+
                 arrival: Arrival = self.__arrival_generator.arrivals.get()
                 unique_identifier: uuid.UUID = uuid.uuid4()
                 task = ArrivalTask(priority=arrival.get_priority(),
@@ -83,9 +110,28 @@ class Orchestrator(object):
                                    param_conf=arrival.get_parameter_config())
 
                 self.__logger.debug(f"Arrival of: {task}")
+                task_params = str(arrival.get_parameter_config().bs)+str(arrival.get_parameter_config().max_epoch)\
+                    +str(arrival.get_system_config().executor_memory)+str(arrival.get_system_config().executor_cores)
+                # if not task_params in scheduled_tasks:
+                    # scheduled_tasks[task_params] = 1
                 self.pending_tasks.put(task)
-
+                arrival_time = datetime.datetime.now()
+                arrival_times[task.id] = arrival_time
+                sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
+                # elif scheduled_tasks[task_params] < 3:
+                #     scheduled_tasks[task_params] += 1
+                #     self.pending_tasks.put(task)
+                #     arrival_time = datetime.datetime.now()
+                #     arrival_times[task.id] = arrival_time
+                #     sys_param[task.id] = [arrival.get_network(), arrival.get_system_config(), arrival.get_parameter_config(), arrival_time]
+            # sort pending tasks according to greedy
+                i += 1
             while not self.pending_tasks.empty():
+
+                if i == 16:
+                    self.stop(arrival_times, sys_param)
+                    return
+
                 # Do blocking request to priority queue
                 curr_task = self.pending_tasks.get()
                 self.__logger.info(f"Scheduling arrival of Arrival: {curr_task.id}")
@@ -100,11 +146,11 @@ class Orchestrator(object):
                 # TODO: Extend this logic in your real project, this is only meant for demo purposes
                 # For now we exit the thread after scheduling a single task.
 
-                self.stop()
-                return
+                # self.stop()
+                # return
 
             self.__logger.debug("Still alive...")
-            time.sleep(5)
+            # time.sleep(5)
 
         logging.info(f'Experiment completed, currently does not support waiting.')
 
