@@ -10,10 +10,8 @@ import torch.distributed as dist
 from sklearn.metrics import confusion_matrix
 from torch.utils.tensorboard import SummaryWriter
 
-from fltk.nets.util.evaluation import calculate_class_precision, calculate_class_recall
-from fltk.nets.util.utils import save_model, load_model_from_file
-from fltk.schedulers import MinCapableStepLR
-from fltk.schedulers.min_lr_step import LearningScheduler
+from fltk.nets.util import calculate_class_precision, calculate_class_recall, save_model, load_model_from_file
+from fltk.schedulers import MinCapableStepLR, LearningScheduler
 from fltk.util.config.arguments import LearningParameters
 from fltk.util.config.base_config import BareConfig
 from fltk.util.results import EpochData
@@ -208,6 +206,7 @@ class Client(object):
         start_time = datetime.datetime.now()
         self._logger.info("Start time " + str(start_time))
         end_time = start_time
+
 
         epoch_results = []
         log_train_loss = 0.0
